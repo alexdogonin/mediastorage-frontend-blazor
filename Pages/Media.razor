@@ -1,0 +1,77 @@
+@page "/media"
+@inject HttpClient ApiClient
+
+<div class="images-container" style="display: flex; flex-wrap: wrap">
+    @if (items != null)
+        @foreach (var item in items)
+        {
+            var realWidth = (float)item.Thumb.Width / (float)item.Thumb.Height * (float)height;
+
+            <div class="image-wrapper" style=@($"width: {(int)realWidth}px; height: {height}px; ") >
+                <img style="width: 100%; height:100%; object-fit: contain" src="@item.Thumb.URL"  />
+            </div>
+
+        }
+    else
+    {
+        var rand = new Random();
+
+        @for (var i = 0; i < emptyItems; i++)
+        {
+            var realWidth = rand.Next(randomBounds);
+
+            <div class="empty-item" style=@($"width: {realWidth}px; height: {height}px") />
+        }
+    }
+</div>
+
+@code {
+    const int height = 200;
+    const int baseWidth = 150;
+    const int randomBounds = 75;
+    const int emptyItems = 100;
+
+    class MediaItem
+    {
+        /*
+        type MediaItem struct {
+        UUID string `json:"uuid"`
+        ThumbURL string `json:"thumb_url,omitempty"`
+        DetailURL string `json:"detail_url,omitempty"`
+        OriginalURL string `json:"original_url,omitempty"`
+        Thumb *MediaItemInfo `json:"thumb,omitempty"`
+        Detail *MediaItemInfo `json:"detail,omitempty"`
+        Original *MediaItemInfo `json:"original,omitempty"`
+        }
+        */
+        public MediaItemInfo Thumb {get;set;}
+
+    }
+
+    class MediaItemInfo
+    {
+        public string URL {get; set;}
+        public uint Width {get; set;}
+        public uint Height {get; set;}
+    }
+
+    class MediaResp
+    {
+        public MediaItem[] Media {get;set;}
+        public string Cursor {get;set;}
+    }
+
+    MediaItem[] items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var opt = new System.Text.Json.JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+        var resp = await ApiClient.GetFromJsonAsync<MediaResp>("/v2/media", opt);
+
+            Console.WriteLine($"resp length: {resp?.Media?.Length}");
+
+        items = resp?.Media;
+    }
+
+
+}

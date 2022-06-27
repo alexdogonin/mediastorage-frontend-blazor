@@ -1,0 +1,10 @@
+.empty-item {
+    background: lightgray; 
+    margin: 1px;
+}
+
+.image-wrapper {
+    /* background: black;  */
+    margin: 2px; 
+    max-width: 1500px;
+}
