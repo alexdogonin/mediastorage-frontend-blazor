@@ -1,10 +1,7 @@
-.empty-item {
+.content-item {
+    object-fit: cover;
     background: lightgray; 
-    margin: 1px;
-}
 
-.image-wrapper {
-    /* background: black;  */
-    margin: 2px; 
-    max-width: 1500px;
+    margin: 1px; 
+    flex-grow: 0.4;
 }
