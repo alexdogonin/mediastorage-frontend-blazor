@@ -1,13 +1,24 @@
 @page "/media"
 @inject HttpClient ApiClient
+@using Ljbc1994.Blazor.IntersectionObserver.Components
+@using Ljbc1994.Blazor.IntersectionObserver
 
 <div class="images-container" style="display: flex; flex-wrap: wrap">
-    @if (items != null)
-        @foreach (var item in items)
+    @if (items != null){
+        @for (var i = 0; i < items.Count(); i ++)
         {
+            var item = items[i];
+            
             <img class="content-item" style=@($"height: {height}px;") src="@item.Thumb.URL"  />
-
         }
+       <IntersectionObserve>
+        <div @ref="context.Ref.Current">
+            @{
+                if (context.IsIntersecting) FetchNewItems();
+                }
+        </div>
+    </IntersectionObserve>
+    }
     else
     {
         var rand = new Random();
@@ -22,6 +33,8 @@
 </div>
 
 @code {
+    ElementReference lastItem;
+    
     const int height = 200;
     const int baseWidth = 250;
     const int randomStep = 50;
@@ -67,7 +80,14 @@
             Console.WriteLine($"resp length: {resp?.Media?.Length}");
 
         items = resp?.Media;
+
     }
 
+    private void FetchNewItems() {
+        Console.WriteLine("FetchNewItems");
+        
+    }
+
+    IntersectionObserve Observe;
     
 }

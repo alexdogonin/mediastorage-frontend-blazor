@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Ljbc1994.Blazor.IntersectionObserver;
 
 namespace mediastorage
 {
@@ -23,6 +24,7 @@ namespace mediastorage
 
             // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = uri });
+            builder.Services.AddIntersectionObserver();
 
             await builder.Build().RunAsync();
         }
