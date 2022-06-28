@@ -2,22 +2,38 @@
 @inject HttpClient ApiClient
 @using Ljbc1994.Blazor.IntersectionObserver.Components
 @using Ljbc1994.Blazor.IntersectionObserver
+@using Sve.Blazor.InfiniteScroll.Components
 
 <div class="images-container" style="display: flex; flex-wrap: wrap">
-    @if (items != null){
-        @for (var i = 0; i < items.Count(); i ++)
-        {
+    @if (items != null && items.Count() > 0)
+    {
+        @* @for (var i = 0; i < items.Count(); i++)
+            {
             var item = items[i];
-            
-            <img class="content-item" style=@($"height: {height}px;") src="@item.Thumb.URL"  />
-        }
-       <IntersectionObserve>
-        <div @ref="context.Ref.Current">
+            var width = (int)((float)height / (float)item.Thumb.Height * (float)item.Thumb.Width);
+
+            <img class="content-item" style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
+            }
+            <IntersectionObserve>
+            <div @ref="context.Ref.Current">
             @{
-                if (context.IsIntersecting) FetchNewItems();
-                }
-        </div>
-    </IntersectionObserve>
+            if (context.IsIntersecting) FetchNewItems();
+            }
+            </div>
+            </IntersectionObserve> *@
+
+        <InfiniteScroll ObserverTargetId="observerTarget" ObservableTargetReached="(e) => FetchNewItemsAsync()">
+            @for (var i = 0; i < items.Count(); i++)
+            {
+                var item = items[i];
+                var width = (int)((float)height / (float)item.Thumb.Height * (float)item.Thumb.Width);
+
+                <img class="content-item" style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
+            }
+
+            @*The target element that we observe. Once this is reached the callback will be triggered.*@
+            <div id="observerTarget"></div>
+        </InfiniteScroll>
     }
     else
     {
@@ -25,7 +41,7 @@
 
         @for (var i = 0; i < emptyItems; i++)
         {
-            var realWidth = baseWidth + rand.Next(-3, 3)*randomStep;
+            var realWidth = baseWidth + rand.Next(-3, 3) * randomStep;
 
             <div class="content-item" style=@($"width: {realWidth}px; height: {height}px") />
         }
@@ -33,8 +49,6 @@
 </div>
 
 @code {
-    ElementReference lastItem;
-    
     const int height = 200;
     const int baseWidth = 250;
     const int randomStep = 50;
@@ -53,41 +67,51 @@
         Original *MediaItemInfo `json:"original,omitempty"`
         }
         */
-        public MediaItemInfo Thumb {get;set;}
-
+        public MediaItemInfo Thumb { get; set; }
     }
 
     class MediaItemInfo
     {
-        public string URL {get; set;}
-        public uint Width {get; set;}
-        public uint Height {get; set;}
+        public string URL { get; set; }
+        public uint Width { get; set; }
+        public uint Height { get; set; }
     }
 
     class MediaResp
     {
-        public MediaItem[] Media {get;set;}
-        public string Cursor {get;set;}
+        public MediaItem[] Media { get; set; }
+        public string Cursor { get; set; }
     }
 
-    MediaItem[] items;
+    List<MediaItem> items = new List<MediaItem>();
+    string cursor = "";
 
     protected override async Task OnInitializedAsync()
     {
-        var opt = new System.Text.Json.JsonSerializerOptions{PropertyNameCaseInsensitive = true};
-        var resp = await ApiClient.GetFromJsonAsync<MediaResp>("/v2/media", opt);
+        @* var opt = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var resp = await ApiClient.GetFromJsonAsync<MediaResp>($"/v2/media?cursor={cursor}", opt);
 
-            Console.WriteLine($"resp length: {resp?.Media?.Length}");
+            items = resp?.Media;
+            cursor = resp?.Cursor; *@
 
-        items = resp?.Media;
-
+        await FetchNewItemsAsync();
     }
 
-    private void FetchNewItems() {
+    private async Task FetchNewItemsAsync()
+    {
         Console.WriteLine("FetchNewItems");
-        
-    }
 
-    IntersectionObserve Observe;
-    
+
+        var opt = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        Console.WriteLine("FetchNewItems 1");
+        var resp = await ApiClient.GetFromJsonAsync<MediaResp>($"/v2/media?cursor={cursor}", opt);
+        Console.WriteLine("FetchNewItems 2");
+
+        if (resp == null) return;
+
+        if (resp.Media.Count() == 0) return;
+
+        items.AddRange(resp.Media);
+        cursor = resp?.Cursor;
+    }
 }
