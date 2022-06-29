@@ -7,25 +7,9 @@
 <div class="images-container" style="display: flex; flex-wrap: wrap">
     @if (items != null && items.Count() > 0)
     {
-        @* @for (var i = 0; i < items.Count(); i++)
-            {
-            var item = items[i];
-            var width = (int)((float)height / (float)item.Thumb.Height * (float)item.Thumb.Width);
-
-            <img class="content-item" style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
-            }
-            <IntersectionObserve>
-            <div @ref="context.Ref.Current">
-            @{
-            if (context.IsIntersecting) FetchNewItems();
-            }
-            </div>
-            </IntersectionObserve> *@
-
         <InfiniteScroll ObserverTargetId="observerTarget" ObservableTargetReached="(e) => FetchNewItemsAsync()">
-            @for (var i = 0; i < items.Count(); i++)
+            @foreach (var item in items)
             {
-                var item = items[i];
                 var width = (int)((float)height / (float)item.Thumb.Height * (float)item.Thumb.Width);
 
                 <img class="content-item" style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
