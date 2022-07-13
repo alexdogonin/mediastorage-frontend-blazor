@@ -1,21 +1,14 @@
 .content-item {
     object-fit: cover;
-    background: lightgray; 
+    background: lightgray;
 
-    margin: 1px; 
+    margin: 1px;
     flex-grow: 1;
     max-width: 1000px;
 }
 
-.detail-frame {
-    background: #0C0C0DDE;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+.content-items-container {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.detail-item {
-    margin: auto;
-}

@@ -4,7 +4,11 @@
 @using Ljbc1994.Blazor.IntersectionObserver
 @using Sve.Blazor.InfiniteScroll.Components
 
-<div class="images-container" style="display: flex; flex-wrap: wrap">
+@if (detailUrl != null) {
+    <DetailView Source=@detailUrl OnClickOutOfImage=@OnClickOutOfDetailViewImage></DetailView>
+}
+
+<div class="content-items-container">
     @if (items != null && items.Count() > 0)
     {
         <InfiniteScroll ObserverTargetId="observerTarget" ObservableTargetReached="(e) => FetchNewItemsAsync()">
@@ -12,7 +16,7 @@
             {
                 var width = (int)((float)height / (float)item.Thumb.Height * (float)item.Thumb.Width);
 
-                <img class="content-item" style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
+                <img class="content-item" @onclick=@(e => OnMediaItemClick(item)) style=@($"height: {height}px; width:{width}px") src="@item.Thumb.URL" />
             }
 
             @*The target element that we observe. Once this is reached the callback will be triggered.*@
@@ -52,6 +56,7 @@
         }
         */
         public MediaItemInfo Thumb { get; set; }
+        public MediaItemInfo Detail { get; set; }
     }
 
     class MediaItemInfo
@@ -97,5 +102,16 @@
 
         items.AddRange(resp.Media);
         cursor = resp?.Cursor;
+    }
+
+    private string detailUrl = null;
+    private void OnMediaItemClick(MediaItem item) {
+        detailUrl = item.Detail.URL;
+    }
+
+    DetailView detailView = null;
+    private void OnClickOutOfDetailViewImage() {
+        detailUrl = null;
+        Console.WriteLine("OnClickOutOfDetailViewImage");
     }
 }

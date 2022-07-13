@@ -1,0 +1,15 @@
+.detail-frame {
+  background: #0C0C0DDE;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+}
+
+.detail-item {
+  margin: auto;
+  max-height: 100%;
+  max-width: 100%;
+}

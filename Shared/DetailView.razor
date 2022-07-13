@@ -1,0 +1,16 @@
+<div class="detail-frame" @onclick=@(e => {OnClickOutOfImage();})>
+  <img class="detail-item" src=@Source />
+</div>
+
+@code {
+  [Parameter]
+  public string Source { get; set; }
+  [Parameter]
+  public Action OnClickOutOfImage {get; set;}
+
+  private void onClickOnFrame(MouseEventArgs e) {
+    if (OnClickOutOfImage != null) {
+      OnClickOutOfImage();
+    }
+  }
+}
