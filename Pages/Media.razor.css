@@ -6,3 +6,16 @@
     flex-grow: 1;
     max-width: 1000px;
 }
+
+.detail-frame {
+    background: #0C0C0DDE;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.detail-item {
+    margin: auto;
+}
