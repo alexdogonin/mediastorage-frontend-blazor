@@ -4,9 +4,7 @@
 @using Ljbc1994.Blazor.IntersectionObserver
 @using Sve.Blazor.InfiniteScroll.Components
 
-@if (detailUrl != null) {
-    <DetailView Source=@detailUrl OnClickOutOfImage=@OnClickOutOfDetailViewImage></DetailView>
-}
+<DetailView Hidden=@hidden @ref=@detailView OnClickOutOfImage=@OnClickOutOfDetailViewImage></DetailView>
 
 <div class="content-items-container">
     @if (items != null && items.Count() > 0)
@@ -82,6 +80,8 @@
 
             items = resp?.Media;
             cursor = resp?.Cursor; *@
+        if (detailView is not null)
+            detailView.Hidden = true;
 
         await FetchNewItemsAsync();
     }
@@ -104,14 +104,17 @@
         cursor = resp?.Cursor;
     }
 
-    private string detailUrl = null;
+    DetailView detailView = new DetailView();
+    @* string detailUrl = null; *@
+
+bool hidden = true;
     private void OnMediaItemClick(MediaItem item) {
-        detailUrl = item.Detail.URL;
+        detailView.Source = item.Detail.URL;
+        hidden = false;
     }
 
-    DetailView detailView = null;
     private void OnClickOutOfDetailViewImage() {
-        detailUrl = null;
+        detailView.Hidden = true;
         Console.WriteLine("OnClickOutOfDetailViewImage");
     }
 }

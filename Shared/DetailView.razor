@@ -1,12 +1,28 @@
-<div class="detail-frame" @onclick=@(e => {OnClickOutOfImage();})>
+<div hidden=@Hidden class="detail-frame" @onclick=@(e => {OnClickOutOfImage();})>
   <img class="detail-item" src=@Source />
 </div>
 
 @code {
+  string source;
   [Parameter]
-  public string Source { get; set; }
+  public string Source { 
+    get => source; 
+    set {
+    Console.WriteLine("DetailView.Source is set: {0}", value);
+    source = value;
+  } 
+  }
   [Parameter]
   public Action OnClickOutOfImage {get; set;}
+  bool hidden;
+  [Parameter]
+  public bool Hidden {
+    get => hidden; 
+    set {
+    Console.WriteLine("DetailView.Hidden is set: {0}", value);
+    hidden = value;
+  }
+  }
 
   private void onClickOnFrame(MouseEventArgs e) {
     if (OnClickOutOfImage != null) {
